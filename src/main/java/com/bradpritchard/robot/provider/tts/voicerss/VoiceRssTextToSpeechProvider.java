@@ -15,6 +15,7 @@ import javax.sound.sampled.Clip;
 import javax.sound.sampled.DataLine;
 import javax.sound.sampled.LineEvent;
 import javax.sound.sampled.LineListener;
+import javax.sound.sampled.SourceDataLine;
 
 import org.apache.commons.io.IOUtils;
 import org.springframework.stereotype.Service;
@@ -23,6 +24,7 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import com.bradpritchard.robot.provider.speechrecognition.SpeechRecognitionProvider;
 import com.bradpritchard.robot.provider.tts.TextToSpeechProvider;
 
 @Service
@@ -41,6 +43,7 @@ public class VoiceRssTextToSpeechProvider implements TextToSpeechProvider {
 		parameters.add("hl", "en-ca");
 		parameters.add("c", "WAV");
 		parameters.add("r", "1");
+		parameters.add("f", "8khz_16bit_stereo");
 		parameters.add("src", text);
 
 		try (InputStream inputStream = buildUriComponents(parameters).toUri().toURL().openStream();
@@ -81,7 +84,7 @@ public class VoiceRssTextToSpeechProvider implements TextToSpeechProvider {
 				byte[] textBytes = convertTextToSpeech(textToSay);
 
 				AudioInputStream audioStream = AudioSystem.getAudioInputStream(new ByteArrayInputStream(textBytes));
-				AudioFormat format = audioStream.getFormat();
+				AudioFormat format = new AudioFormat(8000, 8, 2, true,true);
 				DataLine.Info info = new DataLine.Info(Clip.class, format);
 				Clip audioClip = (Clip) AudioSystem.getLine(info);
 				audioClip.addLineListener(this);
@@ -89,27 +92,23 @@ public class VoiceRssTextToSpeechProvider implements TextToSpeechProvider {
 				audioClip.start();
 				while (!doneSpeaking) {
 					try {
-						Thread.sleep(500);
+						Thread.sleep(100);
 					} catch (InterruptedException ex) {
 						ex.printStackTrace();
 					}
 				}
-				audioClip.close();
-				audioStream.close();
+//				audioClip.close();
+//				audioStream.close();
 
-				// SourceDataLine speakers;
-				// AudioFormat format = new AudioFormat(8000f, 8, 1, true,
-				// true);
-				// DataLine.Info dataLineInfo = new
-				// DataLine.Info(SourceDataLine.class, format);
-				// speakers = (SourceDataLine)
-				// AudioSystem.getLine(dataLineInfo);
-				// speakers.open(format);
-				// speakers.start();
-				//
-				// speakers.write(textBytes, 0, textBytes.length);
-				// speakers.drain();
-				// speakers.close();
+//				 SourceDataLine speakers;
+//				 AudioFormat format = new AudioFormat(SpeechRe, 8, 1, true,true);
+//				 DataLine.Info dataLineInfo = new DataLine.Info(SourceDataLine.class, format);
+//				 speakers = (SourceDataLine) AudioSystem.getLine(dataLineInfo);
+//				 speakers.open(format);
+//				 speakers.start();
+//				 speakers.write(textBytes, 0, textBytes.length);
+//				 speakers.drain();
+//				 speakers.close();
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

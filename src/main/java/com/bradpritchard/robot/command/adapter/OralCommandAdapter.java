@@ -1,6 +1,9 @@
 package com.bradpritchard.robot.command.adapter;
 
 import java.io.ByteArrayOutputStream;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Random;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -26,9 +29,13 @@ public class OralCommandAdapter extends CommandAdapter<ByteArrayOutputStream> {
 	protected TextToSpeechProvider textToSpeechProvider;
 
 	private ExecutorService inputOralCommands;
+	
+	private Random randomGenerator = new Random();
+	private List<String> pleaseWaits;
 
 	public OralCommandAdapter() {
 		inputOralCommands = Executors.newSingleThreadExecutor();
+		pleaseWaits = Arrays.asList("Just a second", "Hold on a sec", "Checking", "Let me check on that");
 	}
 
 	@Override
@@ -82,7 +89,7 @@ public class OralCommandAdapter extends CommandAdapter<ByteArrayOutputStream> {
 					microphone.close();
 
 					try {
-						textToSpeechProvider.sayText("Just a second");
+						textToSpeechProvider.sayText(pleaseWaits.get(randomGenerator.nextInt(pleaseWaits.size())));
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
