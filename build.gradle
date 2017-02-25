@@ -1,0 +1,47 @@
+buildscript {
+  ext {
+    springBootVersion = '1.5.1.RELEASE'
+  }
+  repositories {
+    mavenCentral()
+  }
+  dependencies {
+    classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+  }
+}
+
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'org.springframework.boot'
+
+jar {
+  baseName = 'robot'
+  version = applicationVersion
+}
+
+sourceCompatibility = 1.8
+
+repositories {
+  mavenCentral()
+}
+
+
+dependencies {
+  // Base Application
+  compile('org.springframework.boot:spring-boot-starter-actuator')
+  compile('org.springframework.boot:spring-boot-starter-data-jpa')
+  compile('org.springframework.boot:spring-boot-starter-web')
+  compile('com.fasterxml.jackson.core:jackson-databind')
+  compile('org.projectlombok:lombok:1.16.14')
+  runtime('org.springframework.boot:spring-boot-devtools')
+  runtime('com.h2database:h2')
+  
+  // Google Services
+  compile('com.google.cloud:google-cloud-speech:0.9.3-alpha')
+  
+  // IO Services
+  compile('commons-io:commons-io:2.5')
+
+  testCompile('org.springframework.boot:spring-boot-starter-test')
+  testCompile('org.springframework.restdocs:spring-restdocs-mockmvc')
+}
